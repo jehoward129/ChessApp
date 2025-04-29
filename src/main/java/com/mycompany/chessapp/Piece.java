@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
  * @author jehow
  */
 public class Piece {
-    private BufferedImage image;//image of piece
+    public BufferedImage image;//image of piece
     private int col, row, color;//give the location of the piece and color. White = 0, Black = 1.
     private int x,y; //pixel location of peices
     
@@ -20,14 +20,14 @@ public class Piece {
     private Piece() {
     }
 
-    public Piece(BufferedImage image, int col, int row, int color) {
+    public Piece(BufferedImage image, int row, int col, int color) {
         this.image = image;
         this.col = col;
         this.row = row;
         this.color = color;
     }
 
-    public boolean isMove(int toCol, int toRow){
+    public boolean isMove(int toRow, int toCol){
         return false;
     }
     

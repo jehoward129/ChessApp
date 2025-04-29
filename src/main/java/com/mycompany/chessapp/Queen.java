@@ -11,11 +11,13 @@ import java.awt.image.BufferedImage;
  * @author jehow
  */
 public class Queen extends Piece {
-
+    public BufferedImage image;
+    
+    
     public Queen() {
     }
 
-    public Queen(int col, int row, int color) {
+    public Queen(int row, int col, int color) {
         if (color == 0) {
             image
                     = //white image
@@ -23,11 +25,11 @@ public class Queen extends Piece {
             image
                     = //black image
         }
-        super(image, col, row, color);
+        super(image, row, col, color);
     }
 
     @Override
-    public boolean isMove(int toCol, int toRow) {
+    public boolean isMove(int toRow, int toCol) {
         int currentCol = this.getCol();
         int currentRow = this.getRow();
 

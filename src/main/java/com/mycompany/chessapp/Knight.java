@@ -11,21 +11,23 @@ import java.awt.image.BufferedImage;
  * @author jehow
  */
 public class Knight extends Piece{
-
+    public BufferedImage image;
+    
+    
     public Knight() {
     }
 
-    public Knight(int col, int row, int color) {
+    public Knight(int row, int col, int color) {
         if(color == 0){
             image = //white image
         }else{
             image = //black image
         }
-        super(image, col, row, color);
+        super(image, row, col, color);
     }
     
     @Override
-    public boolean isMove(int toCol, int toRow) {
+    public boolean isMove(int toRow, int toCol) {
         int currentCol = this.getCol();
         int currentRow = this.getRow();
         
