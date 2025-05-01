@@ -12,6 +12,14 @@ import java.util.List;
  * @author jehow
  */
 public class Board {
+    
+//    public void draw(Graphics g){
+//        for(int i = 0; i < 8; i++){
+//            for(int i = 0; i < 8; i++){
+//                
+//            }
+//        }
+//    }
     private Square[][] squares;
     private List<Piece> pieces = new ArrayList<>();
     
@@ -32,6 +40,7 @@ public class Board {
             }
         }
         
+        //White
         pieces.add(new Rook(7, 0, 0));
         pieces.add(new Rook(7, 7, 0));
         pieces.add(new Knight(7, 1, 0));
@@ -40,14 +49,22 @@ public class Board {
         pieces.add(new Bishop(7, 5, 0));
         pieces.add(new Queen(7, 3, 0));
         pieces.add(new King(7, 4, 0));
-        pieces.add(new Rook(0, 0, 0));
-        pieces.add(new Rook(0, 7, 0));
-        pieces.add(new Knight(0, 1, 0));
-        pieces.add(new Knight(0, 6, 0));
-        pieces.add(new Bishop(0, 2, 0));
-        pieces.add(new Bishop(0, 5, 0));
-        pieces.add(new Queen(0, 3, 0));
-        pieces.add(new King(0, 4, 0));
+        for(int i = 0; i < 8; i++){
+            pieces.add(new Pawn(6, i, 0));
+        }
+        
+        //Black
+        pieces.add(new Rook(0, 0, 1));
+        pieces.add(new Rook(0, 7, 1));
+        pieces.add(new Knight(0, 1, 1));
+        pieces.add(new Knight(0, 6, 1));
+        pieces.add(new Bishop(0, 2, 1));
+        pieces.add(new Bishop(0, 5, 1));
+        pieces.add(new Queen(0, 3, 1));
+        pieces.add(new King(0, 4, 1));
+        for(int i = 0; i < 8; i++){
+            pieces.add(new Pawn(1, i, 1));
+        }
         
         for(Piece piece: pieces){
             int row = piece.getRow();

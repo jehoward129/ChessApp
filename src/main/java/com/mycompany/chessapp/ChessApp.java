@@ -4,19 +4,29 @@
  */
 package com.mycompany.chessapp;
 
+import java.awt.Color;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
 /**
  *
  * @author jehow
  */
 public class ChessApp extends javax.swing.JFrame {
-
+    Board board;
     /**
      * Creates new form ChessApp
      */
     public ChessApp() {
         initComponents();
+        boardPanel = new JPanel(new GridLayout(8, 8)); // 8x8 chessboard
+        board = new Board();
+        fillGrid();
         
-        Board board = new Board();
+
     }
 
     /**
@@ -28,17 +38,34 @@ public class ChessApp extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        square00 = new javax.swing.JButton();
+        square1 = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        square00.setBackground(new java.awt.Color(101, 67, 33));
+
+        square1.setBackground(new java.awt.Color(101, 67, 33));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 640, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(square00, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(square1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 474, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 640, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(square00, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(78, 78, 78)
+                .addComponent(square1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(482, Short.MAX_VALUE))
         );
 
         pack();
@@ -78,7 +105,36 @@ public class ChessApp extends javax.swing.JFrame {
             }
         });
     }
+    JPanel boardPanel;
 
+    public void fillGrid() {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                JButton square = new JButton();
+                square.setMargin(new Insets(0, 0, 0, 0)); 
+                square.setBorderPainted(false);          
+                square.setFocusPainted(false);           
+                square.setContentAreaFilled(true);       
+                square.setOpaque(true);       
+                if(!(board.getSquare(row, col) == null)){
+                    Square sq = board.getSquare(row, col);
+                    Piece p = sq.getPiece();
+                    square.setIcon((Icon) p.getImage());
+                }
+
+                // Example: alternate colors for board
+                if ((row + col) % 2 == 0) {
+                    square.setBackground(new Color(240, 217, 181)); // white
+                } else {
+                    square.setBackground(new Color(101, 67, 33)); // black
+                }
+
+                boardPanel.add(square);
+            }
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton square00;
+    private javax.swing.JButton square1;
     // End of variables declaration//GEN-END:variables
 }
