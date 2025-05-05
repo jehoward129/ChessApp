@@ -5,34 +5,44 @@
 package com.mycompany.chessapp;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  *
  * @author jehow
  */
-public class Rook extends Piece{
-    public BufferedImage image;
-    
+public class Rook extends Piece {
+
+
 //    public Rook() {
 //    }
+    public Rook(int row, int col, String color) {
+        super(loadImage(color), row, col, color);
 
-    public Rook(int row, int col, int color) {
-        if(color == 0){
-            image = //white image
-        }else{
-            image = //black image
-        }
-        super(image, row, col, color);
     }
-    
+
+    private static BufferedImage loadImage(String color) {
+
+        try {
+            return ImageIO.read(Rook.class.getResource("/images/" + color + "-rook.png"));
+        } catch (IOException ex) {
+            Logger.getLogger(Rook.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+
+    }
+
     @Override
-    public boolean isMove(int toRow, int toCol){
+    public boolean isMove(int toRow, int toCol) {
         int currentCol = this.getCol();
         int currentRow = this.getRow();
-        
-        if(toCol == currentCol || toRow == currentRow){
+
+        if (toCol == currentCol || toRow == currentRow) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }

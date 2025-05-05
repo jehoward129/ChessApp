@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -20,21 +19,30 @@ import javax.swing.JPanel;
  *
  * @author jehow
  */
-public class ChessApp extends javax.swing.JFrame {
+public class ChessApp1 extends javax.swing.JFrame {
 
+   
     Board board;
+//    GridLayout layout = new GridLayout(8, 8);
 
     /**
      * Creates new form ChessApp
      */
-    public ChessApp() {
+    public ChessApp1() {
         initComponents();
-        setSize(800, 800);
-
+//        boardPanel = new JPanel(new GridLayout(8, 8)); // 8x8 chessboard
         board = new Board();
         boardPanel.setVisible(true);
         fillGrid();
 
+//        square00.setMargin(new Insets(0, 0, 0, 0));
+//        square00.setBorderPainted(false);
+//        square00.setFocusPainted(false);
+//        square00.setContentAreaFilled(true);
+//        square00.setOpaque(true);
+        Square sq = board.getSquare(0, 0);
+        Piece p = sq.getPiece();
+//        square00.setIcon(new ImageIcon(p.getImage()));
     }
 
     /**
@@ -49,9 +57,8 @@ public class ChessApp extends javax.swing.JFrame {
         boardPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(640, 640));
 
-        boardPanel.setBackground(new java.awt.Color(0, 0, 0));
+        boardPanel.setBackground(new java.awt.Color(204, 204, 255));
         boardPanel.setLayout(new java.awt.GridLayout());
         boardPanel.setLayout(new java.awt.GridLayout(8,8));
 
@@ -59,11 +66,13 @@ public class ChessApp extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(boardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(boardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1244, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(boardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(boardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 647, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -86,20 +95,21 @@ public class ChessApp extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ChessApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ChessApp1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ChessApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ChessApp1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ChessApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ChessApp1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ChessApp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ChessApp1.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ChessApp().setVisible(true);
+                new ChessApp1().setVisible(true);
 //                ChessApp app = new ChessApp();
 //                app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //                app.createBoard(app.getContentPane());
@@ -123,19 +133,17 @@ public class ChessApp extends javax.swing.JFrame {
 //        panel.add(boardPanel);
 //
 //    }
+
     public void fillGrid() {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 JButton square = new JButton();
                 square.setVisible(true);
                 square.setOpaque(true);
-                
                 Square sq = board.getSquare(row, col);
                 if (!(sq.getPiece() == null)) {
                     Piece p = sq.getPiece();
-                    Image originalImage = p.getImage(); // Assuming this returns a java.awt.Image
-                    Image scaledImage = originalImage.getScaledInstance(80, 80, Image.SCALE_SMOOTH); // Adjust size as needed
-                    square.setIcon(new ImageIcon(scaledImage));
+                    square.setIcon(new ImageIcon(p.getImage()));
                 }
 
                 // Example: alternate colors for board

@@ -41,29 +41,29 @@ public class Board {
         }
         
         //White
-        pieces.add(new Rook(7, 0, 0));
-        pieces.add(new Rook(7, 7, 0));
-        pieces.add(new Knight(7, 1, 0));
-        pieces.add(new Knight(7, 6, 0));
-        pieces.add(new Bishop(7, 2, 0));
-        pieces.add(new Bishop(7, 5, 0));
-        pieces.add(new Queen(7, 3, 0));
-        pieces.add(new King(7, 4, 0));
+        pieces.add(new Rook(7, 0, "white"));
+        pieces.add(new Rook(7, 7, "white"));
+        pieces.add(new Knight(7, 1, "white"));
+        pieces.add(new Knight(7, 6, "white"));
+        pieces.add(new Bishop(7, 2, "white"));
+        pieces.add(new Bishop(7, 5, "white"));
+        pieces.add(new Queen(7, 3, "white"));
+        pieces.add(new King(7, 4, "white"));
         for(int i = 0; i < 8; i++){
-            pieces.add(new Pawn(6, i, 0));
+            pieces.add(new Pawn(6, i, "white"));
         }
         
         //Black
-        pieces.add(new Rook(0, 0, 1));
-        pieces.add(new Rook(0, 7, 1));
-        pieces.add(new Knight(0, 1, 1));
-        pieces.add(new Knight(0, 6, 1));
-        pieces.add(new Bishop(0, 2, 1));
-        pieces.add(new Bishop(0, 5, 1));
-        pieces.add(new Queen(0, 3, 1));
-        pieces.add(new King(0, 4, 1));
+        pieces.add(new Rook(0, 0, "black"));
+        pieces.add(new Rook(0, 7, "black"));
+        pieces.add(new Knight(0, 1, "black"));
+        pieces.add(new Knight(0, 6, "black"));
+        pieces.add(new Bishop(0, 2, "black"));
+        pieces.add(new Bishop(0, 5, "black"));
+        pieces.add(new Queen(0, 3, "black"));
+        pieces.add(new King(0, 4, "black"));
         for(int i = 0; i < 8; i++){
-            pieces.add(new Pawn(1, i, 1));
+            pieces.add(new Pawn(1, i, "black"));
         }
         
         for(Piece piece: pieces){

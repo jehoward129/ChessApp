@@ -12,19 +12,27 @@ import java.awt.image.BufferedImage;
  */
 public class Piece {
     public BufferedImage image;//image of piece
-    private int col, row, color;//give the location of the piece and color. White = 0, Black = 1.
+    private int col, row, team;//give the location of the piece and team for color. White = 0, Black = 1.
     private int x,y; //pixel location of peices
-    
+    String color;
     
     
     private Piece() {
     }
 
-    public Piece(BufferedImage image, int row, int col, int color) {
+    public Piece(BufferedImage image, int row, int col, String color) {
         this.image = image;
         this.col = col;
         this.row = row;
         this.color = color;
+    }
+
+    public int getTeam() {
+        return team;
+    }
+
+    public void setTeam(int team) {
+        this.team = team;
     }
 
     public boolean isMove(int toRow, int toCol){
@@ -58,11 +66,11 @@ public class Piece {
         this.row = row;
     }
 
-    public int getColor() {
+    public String getColor() {
         return color;
     }
 
-    public void setColor(int color) {
+    public void setColor(String color) {
         this.color = color;
     }
 

@@ -5,20 +5,30 @@
 package com.mycompany.chessapp;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  *
  * @author jehow
  */
 public class Pawn extends Piece{
-    public BufferedImage image;
-    public Pawn(int row, int col, int color) {
-        if(color == 0){
-            image = //white image
-        }else{
-            image = //black image
+    public Pawn(int row, int col, String color) {
+        super(loadImage(color), row, col, color);
+
+    }
+
+    private static BufferedImage loadImage(String color) {
+
+        try {
+            return ImageIO.read(Pawn.class.getResource("/images/" + color + "-pawn.png"));
+        } catch (IOException ex) {
+            Logger.getLogger(Pawn.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-        super(image, row, col, color);
+
     }
 
 //    public Pawn() {
@@ -29,11 +39,16 @@ public class Pawn extends Piece{
     public boolean isMove(int toRow, int toCol){
         int currentCol = this.getCol();
         int currentRow = this.getRow();
-        int color = this.getColor();
+        int team;
+        if(color == "white"){
+            team = 0;
+        }else{
+            team = 1;
+        }
         
         
         if(currentCol == toCol){
-            if(color == 0){ //for white moves up the board so decrease row
+            if(team == 0){ //for white moves up the board so decrease row
                 
                 //normal move
                 if(toRow == (currentRow -1)){

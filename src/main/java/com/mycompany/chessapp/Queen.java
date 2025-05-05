@@ -5,27 +5,30 @@
 package com.mycompany.chessapp;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  *
  * @author jehow
  */
 public class Queen extends Piece {
-    public BufferedImage image;
-    
-    
-    public Queen() {
+    public Queen(int row, int col, String color) {
+        super(loadImage(color), row, col, color);
+
     }
 
-    public Queen(int row, int col, int color) {
-        if (color == 0) {
-            image
-                    = //white image
-        } else {
-            image
-                    = //black image
+    private static BufferedImage loadImage(String color) {
+
+        try {
+            return ImageIO.read(Queen.class.getResource("/images/" + color + "-queen.png"));
+        } catch (IOException ex) {
+            Logger.getLogger(Queen.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-        super(image, row, col, color);
+
     }
 
     @Override

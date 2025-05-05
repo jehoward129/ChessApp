@@ -5,25 +5,30 @@
 package com.mycompany.chessapp;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  *
  * @author jehow
  */
 public class Bishop extends Piece{
-    public BufferedImage image;
-    
-    
-    public Bishop(int row, int col, int color) {
-        if(color == 0){
-            image = //white image
-        }else{
-            image = //black image
-        }
-        super(image, row, col, color);
+    public Bishop(int row, int col, String color) {
+        super(loadImage(color), row, col, color);
+
     }
 
-    public Bishop() {
+    private static BufferedImage loadImage(String color) {
+
+        try {
+            return ImageIO.read(Bishop.class.getResource("/images/" + color + "-bishop.png"));
+        } catch (IOException ex) {
+            Logger.getLogger(Bishop.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+
     }
     @Override
      public boolean isMove(int toRow, int toCol){
