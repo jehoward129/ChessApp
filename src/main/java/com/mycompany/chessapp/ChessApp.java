@@ -27,10 +27,21 @@ public class ChessApp extends javax.swing.JFrame {
 
     Board board;
     ActionListener listener;
-    Square tempSquare;
-    Piece tempPiece;
-    JButton tempBtn;
-    int turn = 0;
+
+    Square prevSquare = null;
+    Square clickedSquare;
+
+    Piece prevPiece = null;
+    Piece clickedPiece;
+
+    JButton prevBtn = null;
+
+    int currentRow;
+    int currentCol;
+    int prevRow;
+    int prevCol;
+
+    int turn = 0; //0 for white, 1 for black
 
     /**
      * Creates new form ChessApp
@@ -44,79 +55,9 @@ public class ChessApp extends javax.swing.JFrame {
         listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(".actionPerformed()");
+
                 JButton source = (JButton) e.getSource();
-                source.setBackground(Color.red);
-                String pos = source.getActionCommand();
-                String[] thing = pos.split(",");
-                int row = Integer.parseInt(thing[0]);
-                int col = Integer.parseInt(thing[1]);
-                System.out.println(row + "," + col);
-
-                Square clickedSquare = board.getSquare(row, col);
-                Piece clickedPiece = clickedSquare.getPiece();
-
-                if (tempPiece != null) {
-                    if (tempPiece.isMove(row, col)) {
-                        tempPiece.setCol(col);
-                        tempPiece.setRow(row);
-                        clickedSquare.setPiece(tempPiece);
-                        tempSquare.setPiece(null);
-
-                        Image originalImage = tempPiece.getImage();
-                        System.out.println(originalImage.getWidth(source));
-                        Image scaledImage = originalImage.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
-                        System.out.println(scaledImage.getWidth(source));
-                        source.setIcon(new ImageIcon(scaledImage));
-                        tempBtn.setIcon(null);
-                        tempPiece = null;
-                        tempSquare = null;
-                        if ((row + col) % 2 == 0) {
-                            tempBtn.setBackground(new Color(240, 217, 181)); // white
-                        } else {
-                            tempBtn.setBackground(new Color(101, 67, 33)); // black
-                        }
-                        if ((row + col) % 2 == 0) {
-                            source.setBackground(new Color(240, 217, 181)); // white
-                        } else {
-                            source.setBackground(new Color(101, 67, 33)); // black
-                        }
-                        tempBtn = null;
-                        if (turn == 0) {
-                            turn = 1;
-                        } else if (turn == 1) {
-                            turn = 0;
-                        }
-                        return;
-
-                    } else {
-                        tempPiece = null;
-                        tempSquare = null;
-                        tempBtn = null;
-                        if ((row + col) % 2 == 0) {
-                            tempBtn.setBackground(new Color(240, 217, 181)); // white
-                        } else {
-                            tempBtn.setBackground(new Color(101, 67, 33)); // black
-                        }
-                        if ((row + col) % 2 == 0) {
-                            source.setBackground(new Color(240, 217, 181)); // white
-                        } else {
-                            source.setBackground(new Color(101, 67, 33)); // black
-                        }
-                    }
-                }
-
-                // if there is a piece in the selected square and as piece has been selected.
-                if (tempPiece == null && clickedPiece != null) {
-                    if ((turn == 0 && clickedPiece.getColor().equalsIgnoreCase("white")) || (turn == 1 && clickedPiece.getColor().equalsIgnoreCase("black"))) {
-                        
-                        tempPiece = clickedPiece;
-                        tempSquare = clickedSquare;
-                        tempBtn = source;
-                    }
-
-                }
-
+                BtnClicked(source);
             }
         };
         fillGrid();
@@ -195,23 +136,173 @@ public class ChessApp extends javax.swing.JFrame {
         });
     }
 
-//    public void createBoard(final Container panel) {
-//        boardPanel = new JPanel();
-//        boardPanel.setLayout(layout);
-//
-//        JButton b = new JButton();
-//        Dimension buttonSize = new Dimension(80, 80);
-//        boardPanel.setPreferredSize(buttonSize);
-//        for (int i = 0; i < 64; i++) {
-//            boardPanel.add(new JButton());
-//        }
-//
-//        panel.add(boardPanel);
-//
-//    }
-    public void actionPerformed(ActionEvent btnPress) {
-        String pos = btnPress.getActionCommand();
-        System.out.println("Button Pressed at: " + pos);
+    public void BtnClicked(JButton clickedBtn) {
+        clickedBtn.setBackground(Color.red);
+        String pos = clickedBtn.getActionCommand();
+        String[] thing = pos.split(",");
+        currentRow = Integer.parseInt(thing[0]);
+        currentCol = Integer.parseInt(thing[1]);
+        System.out.println(currentRow + "," + currentCol);
+
+        clickedSquare = board.getSquare(currentRow, currentCol);
+        clickedPiece = clickedSquare.getPiece();
+
+        //If Piece already clicked than try to move piece
+        if (prevPiece != null) {
+
+            //check for legal move
+            if (prevPiece.isMove(currentRow, currentCol)) { //if legal
+                makeMove(prevBtn, clickedBtn);
+            } else if (prevPiece instanceof Pawn) { // check for pawn capturing diagnol
+                if ((clickedSquare.getPiece() != null) && (Math.abs(currentCol - prevCol) == 1)) {
+                    if (((prevPiece.getColor().equalsIgnoreCase("white")) && ((prevRow - currentRow) == 1)) || ((prevPiece.getColor().equalsIgnoreCase("black")) && ((prevRow - currentRow) == -1))) {
+                        makeMove(prevBtn, clickedBtn);
+                    }else{
+                        resetAll(prevBtn, clickedBtn);
+                    }
+                }
+            } else if ((prevPiece instanceof King) && (clickedPiece instanceof Rook)) { //castling
+                if(canCastle(prevPiece, clickedPiece)){
+                    castle(prevPiece, clickedPiece, prevBtn, clickedBtn);
+                }
+            } else { //if illigal reset all
+                resetAll(prevBtn, clickedBtn);
+            }
+
+        }
+
+        // if there is a piece in the selected square and as piece has been selected.
+        if (prevPiece == null && clickedPiece != null) {
+
+            //check for correct turn
+            if ((turn == 0 && clickedPiece.getColor().equalsIgnoreCase("white")) || (turn == 1 && clickedPiece.getColor().equalsIgnoreCase("black"))) {
+                prevPiece = clickedPiece;
+                prevSquare = clickedSquare;
+                prevBtn = clickedBtn;
+                prevCol = currentCol;
+                prevRow = currentRow;
+            } else {
+
+                //if incorrect turn, don't change color
+                resetColor(clickedBtn);
+            }
+
+        }
+
+        //No piece selected and clicked empty square don't change color
+        if (prevPiece == null && clickedPiece == null) {
+            resetColor(clickedBtn);
+        }
+    }
+
+    public void resetColor(JButton btn) {
+        String pos = btn.getActionCommand();
+        String[] thing = pos.split(",");
+        int row = Integer.parseInt(thing[0]);
+        int col = Integer.parseInt(thing[1]);
+        if ((row + col) % 2 == 0) {
+            btn.setBackground(new Color(240, 217, 181)); // white
+        } else {
+            btn.setBackground(new Color(101, 67, 33)); // black
+        }
+    }
+
+    public void makeMove(JButton fromSquare, JButton toSquare) {
+        //move piece on board
+        prevPiece.setCol(currentCol);
+        prevPiece.setRow(currentRow);
+        clickedSquare.setPiece(prevPiece);
+        prevSquare.setPiece(null);
+
+        //move piece image on gui
+        Image originalImage = prevPiece.getImage();
+        Image scaledImage = originalImage.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+        toSquare.setIcon(new ImageIcon(scaledImage));
+        fromSquare.setIcon(null);
+
+        //reset colors
+        resetAll(fromSquare, toSquare);
+
+        // Switch turn
+        if(turn == 0){
+            turn =1;
+        }else{
+            turn = 0;
+        }
+    }
+
+    //Resets everything if wrong move.
+    public void resetAll(JButton fromSquare, JButton toSquare) {
+        resetColor(fromSquare);
+        resetColor(toSquare);
+        prevPiece = null;
+        prevSquare = null;
+        prevBtn = null;
+    }
+
+    public boolean canCastle(Piece king, Piece rook) {
+
+        // Ensure both are on same row
+        if (king.getRow() != rook.getRow()) {
+            return false;
+        }
+
+        int row = king.getRow();
+        int kingCol = king.getCol();
+        int rookCol = rook.getCol();
+
+        int start = Math.min(kingCol, rookCol) + 1;
+        int end = Math.max(kingCol, rookCol) - 1;
+
+        // Check if all squares between are empty
+        for (int col = start; col <= end; col++) {
+            if (board.getSquare(row, col).getPiece() != null) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void castle(Piece king, Piece rook, JButton kingBtn, JButton rookBtn) {
+        int kingCol = king.getCol();
+        int rookCol = rook.getCol();
+
+        int newKingCol;
+        int newRookCol;
+        if(kingCol < rookCol){
+            newKingCol = kingCol +2;
+            newRookCol = rookCol - 2;
+        }else{
+            newKingCol = kingCol - 2;
+            newRookCol = rookCol +3;
+        }
+
+        // Move king
+        board.getSquare(prevRow, kingCol).setPiece(null);
+        board.getSquare(prevRow, newKingCol).setPiece(king);
+        king.setCol(newKingCol);
+
+        // Move rook
+        board.getSquare(prevRow, rookCol).setPiece(null);
+        board.getSquare(prevRow, newRookCol).setPiece(rook);
+        rook.setCol(newRookCol);
+
+        // Update GUI
+        JButton newKingBtn = (JButton) boardPanel.getComponent(prevRow *8 + newKingCol);
+        JButton newRookBtn = (JButton) boardPanel.getComponent(prevRow *8 + newRookCol);
+
+        Image kingImg = king.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+        Image rookImg = rook.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+
+        newKingBtn.setIcon(new ImageIcon(kingImg));
+        newRookBtn.setIcon(new ImageIcon(rookImg));
+        kingBtn.setIcon(null);
+        rookBtn.setIcon(null);
+
+        // Reset visuals and turn
+        resetAll(kingBtn, rookBtn);
+        turn = (turn == 0) ? 1 : 0;
     }
 
     public void fillGrid() {

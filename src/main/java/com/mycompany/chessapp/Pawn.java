@@ -73,6 +73,8 @@ public class Pawn extends Piece{
                 
                 //Still needs capture
             }
+            
+            
         }
         return false; //if no conditions met, return false
      }
