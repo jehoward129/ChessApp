@@ -10,11 +10,14 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.event.AncestorListener;
 
 /**
  *
@@ -23,6 +26,11 @@ import javax.swing.JPanel;
 public class ChessApp extends javax.swing.JFrame {
 
     Board board;
+    ActionListener listener;
+    Square tempSquare;
+    Piece tempPiece;
+    JButton tempBtn;
+    int turn = 0;
 
     /**
      * Creates new form ChessApp
@@ -33,6 +41,84 @@ public class ChessApp extends javax.swing.JFrame {
 
         board = new Board();
         boardPanel.setVisible(true);
+        listener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println(".actionPerformed()");
+                JButton source = (JButton) e.getSource();
+                source.setBackground(Color.red);
+                String pos = source.getActionCommand();
+                String[] thing = pos.split(",");
+                int row = Integer.parseInt(thing[0]);
+                int col = Integer.parseInt(thing[1]);
+                System.out.println(row + "," + col);
+
+                Square clickedSquare = board.getSquare(row, col);
+                Piece clickedPiece = clickedSquare.getPiece();
+
+                if (tempPiece != null) {
+                    if (tempPiece.isMove(row, col)) {
+                        tempPiece.setCol(col);
+                        tempPiece.setRow(row);
+                        clickedSquare.setPiece(tempPiece);
+                        tempSquare.setPiece(null);
+
+                        Image originalImage = tempPiece.getImage();
+                        System.out.println(originalImage.getWidth(source));
+                        Image scaledImage = originalImage.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+                        System.out.println(scaledImage.getWidth(source));
+                        source.setIcon(new ImageIcon(scaledImage));
+                        tempBtn.setIcon(null);
+                        tempPiece = null;
+                        tempSquare = null;
+                        if ((row + col) % 2 == 0) {
+                            tempBtn.setBackground(new Color(240, 217, 181)); // white
+                        } else {
+                            tempBtn.setBackground(new Color(101, 67, 33)); // black
+                        }
+                        if ((row + col) % 2 == 0) {
+                            source.setBackground(new Color(240, 217, 181)); // white
+                        } else {
+                            source.setBackground(new Color(101, 67, 33)); // black
+                        }
+                        tempBtn = null;
+                        if (turn == 0) {
+                            turn = 1;
+                        } else if (turn == 1) {
+                            turn = 0;
+                        }
+                        return;
+
+                    } else {
+                        tempPiece = null;
+                        tempSquare = null;
+                        tempBtn = null;
+                        if ((row + col) % 2 == 0) {
+                            tempBtn.setBackground(new Color(240, 217, 181)); // white
+                        } else {
+                            tempBtn.setBackground(new Color(101, 67, 33)); // black
+                        }
+                        if ((row + col) % 2 == 0) {
+                            source.setBackground(new Color(240, 217, 181)); // white
+                        } else {
+                            source.setBackground(new Color(101, 67, 33)); // black
+                        }
+                    }
+                }
+
+                // if there is a piece in the selected square and as piece has been selected.
+                if (tempPiece == null && clickedPiece != null) {
+                    if ((turn == 0 && clickedPiece.getColor().equalsIgnoreCase("white")) || (turn == 1 && clickedPiece.getColor().equalsIgnoreCase("black"))) {
+                        
+                        tempPiece = clickedPiece;
+                        tempSquare = clickedSquare;
+                        tempBtn = source;
+                    }
+
+                }
+
+            }
+        };
         fillGrid();
 
     }
@@ -123,18 +209,25 @@ public class ChessApp extends javax.swing.JFrame {
 //        panel.add(boardPanel);
 //
 //    }
+    public void actionPerformed(ActionEvent btnPress) {
+        String pos = btnPress.getActionCommand();
+        System.out.println("Button Pressed at: " + pos);
+    }
+
     public void fillGrid() {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
                 JButton square = new JButton();
                 square.setVisible(true);
                 square.setOpaque(true);
-                
+                square.setActionCommand(row + "," + col);
+                square.addActionListener(listener);
+
                 Square sq = board.getSquare(row, col);
                 if (!(sq.getPiece() == null)) {
                     Piece p = sq.getPiece();
                     Image originalImage = p.getImage(); // Assuming this returns a java.awt.Image
-                    Image scaledImage = originalImage.getScaledInstance(80, 80, Image.SCALE_SMOOTH); // Adjust size as needed
+                    Image scaledImage = originalImage.getScaledInstance(boardPanel.getHeight() / 8, boardPanel.getHeight() / 8, Image.SCALE_SMOOTH); // Adjust size as needed
                     square.setIcon(new ImageIcon(scaledImage));
                 }
 
