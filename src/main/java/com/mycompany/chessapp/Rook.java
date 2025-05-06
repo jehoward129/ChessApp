@@ -15,13 +15,14 @@ import javax.imageio.ImageIO;
  * @author jehow
  */
 public class Rook extends Piece {
+    private boolean hasMoved = false;
 
+    public boolean hasMoved(){
+        return hasMoved;
+    }
 
-//    public Rook() {
-//    }
     public Rook(int row, int col, String color) {
         super(loadImage(color), row, col, color);
-
     }
 
     private static BufferedImage loadImage(String color) {

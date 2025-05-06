@@ -13,8 +13,19 @@ import javax.imageio.ImageIO;
 /**
  *
  * @author jehow
+ * @author Tussky
  */
 public class King extends Piece {
+    private boolean hasMoved = false;
+
+    public void moved(){
+        this.hasMoved = true;
+    }
+
+    public boolean hasMoved(){
+        return hasMoved;
+    }
+
     public King(int row, int col, String color) {
         super(loadImage(color), row, col, color);
 

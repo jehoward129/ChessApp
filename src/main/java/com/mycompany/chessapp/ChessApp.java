@@ -227,9 +227,13 @@ public class ChessApp extends javax.swing.JFrame {
         
         prevPiece.setCol(currentCol);
         prevPiece.setRow(currentRow);
-        if(isCheck()){
-//            isMate();
+        
+        if (prevPiece instanceof com.mycompany.chessapp.King){
+            ((com.mycompany.chessapp.King)prevPiece).moved();
         }
+
+        isCheck();
+
         clickedSquare.setPiece(prevPiece);
         prevSquare.setPiece(null);
 
@@ -299,14 +303,22 @@ public class ChessApp extends javax.swing.JFrame {
         prevBtn = null;
     }
 
-    public boolean canCastle(Piece king, Piece rook) {
+    public boolean canCastle(Piece kingPiece, Piece rookPiece) {
 
-        // Ensure both are on same row
-        if (king.getRow() != rook.getRow()) {
+
+        King king = (King) kingPiece;
+        Rook rook = (Rook) rookPiece;
+
+        if (king.hasMoved() || rook.hasMoved()){
             return false;
         }
 
-        int row = king.getRow();
+        // Ensure both are on same row
+        if (kingPiece.getRow() != rookPiece.getRow()) {
+            return false;
+        }
+
+        int row = kingPiece.getRow();
         int kingCol = king.getCol();
         int rookCol = rook.getCol();
 
