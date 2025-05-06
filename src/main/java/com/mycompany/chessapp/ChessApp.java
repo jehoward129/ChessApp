@@ -137,7 +137,7 @@ public class ChessApp extends javax.swing.JFrame {
     }
 
     public void BtnClicked(JButton clickedBtn) {
-        clickedBtn.setBackground(Color.red);
+        clickedBtn.setBackground(Color.green);
         String pos = clickedBtn.getActionCommand();
         String[] thing = pos.split(",");
         currentRow = Integer.parseInt(thing[0]);
@@ -151,7 +151,7 @@ public class ChessApp extends javax.swing.JFrame {
         if (prevPiece != null) {
 
             //check for legal move
-            if (prevPiece.isMove(currentRow, currentCol)) { //if legal
+            if (board.isMove(prevSquare, clickedSquare)) { //if legal
                 makeMove(prevBtn, clickedBtn);
                 return;
             } else if (prevPiece instanceof Pawn) { // check for pawn capturing diagnol
@@ -160,7 +160,7 @@ public class ChessApp extends javax.swing.JFrame {
                         makeMove(prevBtn, clickedBtn);
                         return;
                     }
-                }else{
+                } else {
                     resetAll(prevBtn, clickedBtn);
                 }
             } else if ((prevPiece instanceof King) && (clickedPiece instanceof Rook)) { //castling
@@ -169,7 +169,7 @@ public class ChessApp extends javax.swing.JFrame {
                 }
             } else { //if illigal reset all
                 resetAll(prevBtn, clickedBtn);
-                
+
             }
 
         }
@@ -213,8 +213,12 @@ public class ChessApp extends javax.swing.JFrame {
 
     public void makeMove(JButton fromSquare, JButton toSquare) {
         // move piece on board
+        
         prevPiece.setCol(currentCol);
         prevPiece.setRow(currentRow);
+        if(isCheck()){
+//            isMate();
+        }
         clickedSquare.setPiece(prevPiece);
         prevSquare.setPiece(null);
 
@@ -223,6 +227,7 @@ public class ChessApp extends javax.swing.JFrame {
         Image scaledImage = originalImage.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
         toSquare.setIcon(new ImageIcon(scaledImage));
         fromSquare.setIcon(null);
+        
 
         //reset
         resetAll(fromSquare, toSquare);
@@ -235,6 +240,46 @@ public class ChessApp extends javax.swing.JFrame {
         }
         System.out.println(turn);
     }
+
+    public boolean isCheck() {
+        Square kingSquare = null;
+        
+        //find king
+        if (turn == 0) {
+            for (int row = 0; row < 8; row++) {
+                for (int col = 0; col < 8; col++) {
+                    Square square = board.getSquare(row, col);
+                    Piece piece = square.getPiece();
+                    if (piece instanceof King && piece.getColor().equalsIgnoreCase("black")) {
+                        kingSquare = square;
+                    }
+                }
+            }
+        }else{
+            for (int row = 0; row < 8; row++) {
+                for (int col = 0; col < 8; col++) {
+                    Square square = board.getSquare(row, col);
+                    Piece piece = square.getPiece();
+                    if (piece instanceof King && piece.getColor().equalsIgnoreCase("white")) {
+                        kingSquare = square;
+                    }
+                }
+            }
+        }
+        
+        int kingCol = kingSquare.getCol();
+        int kingRow = kingSquare.getRow();
+        boolean inCheck = prevPiece.isMove(kingRow, kingCol);
+        if(inCheck){
+            JButton KingBtn = (JButton) boardPanel.getComponent(kingRow * 8 + kingCol);
+            KingBtn.setBackground(Color.red);
+        }
+        return inCheck;
+
+    }
+    
+    
+    
 
     //Resets everything if wrong move.
     public void resetAll(JButton fromSquare, JButton toSquare) {

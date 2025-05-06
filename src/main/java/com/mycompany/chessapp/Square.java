@@ -60,6 +60,16 @@ public class Square {
     public void setPiece(Piece piece) {
         this.piece = piece;
     }
+    
+    public boolean hasPiece(){
+        boolean maybePiece;
+        if(this.getPiece() == null){
+            return false;
+        }else{
+            return true;
+        }
+        
+    }
 
     
     

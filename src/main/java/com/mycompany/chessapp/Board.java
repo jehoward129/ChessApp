@@ -12,7 +12,7 @@ import java.util.List;
  * @author jehow
  */
 public class Board {
-    
+
 //    public void draw(Graphics g){
 //        for(int i = 0; i < 8; i++){
 //            for(int i = 0; i < 8; i++){
@@ -22,24 +22,25 @@ public class Board {
 //    }
     private Square[][] squares;
     private List<Piece> pieces = new ArrayList<>();
-    
+
     int tempColor;
+
     public Board() {
         squares = new Square[8][8]; // Create the array
 
         // Initialize each Square object in the array
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
-                if(row + col == 0){
+                if (row + col == 0) {
                     tempColor = 0;
-                }else{
+                } else {
                     tempColor = 1;
                 }
                 squares[row][col] = new Square(row, col, tempColor);
-                
+
             }
         }
-        
+
         //White
         pieces.add(new Rook(7, 0, "white"));
         pieces.add(new Rook(7, 7, "white"));
@@ -49,10 +50,10 @@ public class Board {
         pieces.add(new Bishop(7, 5, "white"));
         pieces.add(new Queen(7, 3, "white"));
         pieces.add(new King(7, 4, "white"));
-        for(int i = 0; i < 8; i++){
+        for (int i = 0; i < 8; i++) {
             pieces.add(new Pawn(6, i, "white"));
         }
-        
+
         //Black
         pieces.add(new Rook(0, 0, "black"));
         pieces.add(new Rook(0, 7, "black"));
@@ -62,20 +63,37 @@ public class Board {
         pieces.add(new Bishop(0, 5, "black"));
         pieces.add(new Queen(0, 3, "black"));
         pieces.add(new King(0, 4, "black"));
-        for(int i = 0; i < 8; i++){
+        for (int i = 0; i < 8; i++) {
             pieces.add(new Pawn(1, i, "black"));
         }
-        
-        for(Piece piece: pieces){
+
+        for (Piece piece : pieces) {
             int row = piece.getRow();
             int col = piece.getCol();
-            
+
             squares[row][col].setPiece(piece);
         }
-        
+
     }
 
     public Square getSquare(int row, int col) {
         return squares[row][col];
+    }
+
+    public boolean isMove(Square from, Square to) {
+        Piece movingPiece = from.getPiece();
+
+        if (from == to) {
+            return false; // Can't move to the same square
+        }
+        Piece targetPiece = to.getPiece();
+
+        // If there's a piece on the target square and it's the same color, can't move there
+        if (targetPiece != null && targetPiece.getColor().equalsIgnoreCase(movingPiece.getColor())) {
+            return false;
+        }
+
+        // Check if the move is legal based on piece movement
+        return movingPiece.isMove(to.getRow(), to.getCol());
     }
 }
