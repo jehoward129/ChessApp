@@ -80,6 +80,8 @@ public class Board {
         return squares[row][col];
     }
 
+    
+    
     public boolean isMove(Square from, Square to) {
         Piece movingPiece = from.getPiece();
 
@@ -93,7 +95,94 @@ public class Board {
             return false;
         }
 
+        if (!(movingPiece.isMove(to.getRow(), to.getCol()))){
+            return false;
+        }
+        
+
+        if (movingPiece instanceof Rook || movingPiece instanceof Queen) {
+            int frow = from.getRow();
+            int fcol = from.getCol();
+            int trow = to.getRow();
+            int tcol = to.getCol();
+            int dist;
+            if(frow == trow){
+                dist = Math.abs(fcol - tcol);
+                if(tcol < fcol){
+                    for(int i = 0; i < dist; i++){
+                        if(squares[trow][tcol + i].hasPiece()){
+                            return false;
+                        }
+                    }
+                    
+                }else{
+                    for(int i = 0; i < dist; i++){
+                        if(squares[trow][tcol - i].hasPiece()){
+                            return false;
+                        }
+                    }
+                }
+                
+            }else{
+                dist = Math.abs(trow - frow);
+                if(trow < frow){
+                    for(int i = 0; i < dist; i++){
+                        if(squares[trow + i][tcol].hasPiece()){
+                            return false;
+                        }
+                    }
+                    
+                }else{
+                    for(int i = 0; i < dist; i++){
+                        if(squares[trow - i][tcol].hasPiece()){
+                            return false;
+                        }
+                    }
+                }
+            }
+                    
+        }
+        
+        if(movingPiece instanceof Queen || movingPiece instanceof Bishop){
+            int frow = from.getRow();
+            int fcol = from.getCol();
+            int trow = to.getRow();
+            int tcol = to.getCol();
+            int dist;
+            if(trow < frow){
+                dist = Math.abs(frow - trow);
+                if(tcol < fcol){
+                    for(int i = 0; i < dist; i++){
+                        if(squares[trow + i][tcol +i].hasPiece()){
+                            return false;
+                        }
+                    }
+                }else{
+                    for(int i = 0; i < dist; i++){
+                        if(squares[trow + i][tcol - i].hasPiece()){
+                            return false;
+                        }
+                    }
+                }
+            }else{
+                dist = Math.abs(frow - trow);
+                if(tcol < fcol){
+                    for(int i = 0; i < dist; i++){
+                        if(squares[trow - i][tcol +i].hasPiece()){
+                            return false;
+                        }
+                    }
+                }else{
+                    for(int i = 0; i < dist; i++){
+                        if(squares[trow - i][tcol - i].hasPiece()){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
         // Check if the move is legal based on piece movement
-        return movingPiece.isMove(to.getRow(), to.getCol());
+        return true;
     }
 }

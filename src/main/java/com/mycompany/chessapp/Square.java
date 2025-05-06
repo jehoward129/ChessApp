@@ -62,7 +62,6 @@ public class Square {
     }
     
     public boolean hasPiece(){
-        boolean maybePiece;
         if(this.getPiece() == null){
             return false;
         }else{
