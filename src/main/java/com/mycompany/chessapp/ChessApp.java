@@ -228,6 +228,7 @@ public class ChessApp extends javax.swing.JFrame {
         prevPiece.setCol(currentCol);
         prevPiece.setRow(currentRow);
         
+        // A check to see if the rook or king is moving - for castling purposes.
         if (prevPiece instanceof com.mycompany.chessapp.King){
             ((com.mycompany.chessapp.King)prevPiece).moved();
         }
@@ -235,6 +236,20 @@ public class ChessApp extends javax.swing.JFrame {
         if (prevPiece instanceof com.mycompany.chessapp.Rook){
             ((com.mycompany.chessapp.Rook)prevPiece).moved();
         }
+
+        if (prevPiece instanceof com.mycompany.chessapp.Pawn){
+            if (currentRow == 7 || currentRow == 0){
+
+                Pawn currentPawn = (Pawn) prevPiece;
+
+                if (currentPawn.getColor().equalsIgnoreCase("white")){
+                    prevPiece = new Queen(currentRow, currentCol, "white");
+                } else {
+                    prevPiece = new Queen(currentRow, currentCol, "black");
+                }
+            }
+        }
+        System.out.println("Current ROW:" +currentRow);
 
         isCheck();
 
@@ -294,7 +309,6 @@ public class ChessApp extends javax.swing.JFrame {
             KingBtn.setBackground(Color.red);
         }
         return inCheck;
-
     }
     
 
@@ -317,6 +331,7 @@ public class ChessApp extends javax.swing.JFrame {
             return false;
         }
 
+
         // Ensure both are on same row
         if (kingPiece.getRow() != rookPiece.getRow()) {
             return false;
@@ -335,7 +350,6 @@ public class ChessApp extends javax.swing.JFrame {
                 return false;
             }
         }
-
         return true;
     }
 
