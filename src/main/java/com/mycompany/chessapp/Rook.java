@@ -17,6 +17,10 @@ import javax.imageio.ImageIO;
 public class Rook extends Piece {
     private boolean hasMoved = false;
 
+    public void moved(){
+        this.hasMoved = true;
+    }
+
     public boolean hasMoved(){
         return hasMoved;
     }

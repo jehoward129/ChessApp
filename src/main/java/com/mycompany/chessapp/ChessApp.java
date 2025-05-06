@@ -232,6 +232,10 @@ public class ChessApp extends javax.swing.JFrame {
             ((com.mycompany.chessapp.King)prevPiece).moved();
         }
 
+        if (prevPiece instanceof com.mycompany.chessapp.Rook){
+            ((com.mycompany.chessapp.Rook)prevPiece).moved();
+        }
+
         isCheck();
 
         clickedSquare.setPiece(prevPiece);
