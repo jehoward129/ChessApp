@@ -16,6 +16,9 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.event.AncestorListener;
 
@@ -48,10 +51,10 @@ public class ChessApp extends javax.swing.JFrame {
      */
     public ChessApp() {
         initComponents();
-        setSize(800, 800);
-
+        setSize(900, 900);
         board = new Board();
         boardPanel.setVisible(true);
+
         listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -60,8 +63,46 @@ public class ChessApp extends javax.swing.JFrame {
                 BtnClicked(source);
             }
         };
-        fillGrid();
+        
+        JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("File");
+        JMenuItem restartItem = new JMenuItem("Restart Game");
+        JMenuItem exitItem = new JMenuItem("Exit");
 
+        exitItem.addActionListener(e -> System.exit(0));
+
+        restartItem.addActionListener(e -> {
+            // System.out.println("called");
+            // boardPanel.removeAll();
+            // initComponents();
+            // setSize(800, 800);
+            // board = new Board();
+            // boardPanel.setVisible(true);
+            // fillGrid();
+            // // boardPanel.repaint();
+
+            boardPanel.removeAll();
+            prevSquare = null;
+            clickedSquare = null;
+            prevPiece = null;
+            clickedPiece = null;
+            prevBtn = null;
+            turn = 0;
+            
+            setSize(900, 900);
+            board = new Board();
+            fillGrid(); // re-add buttons and images
+            boardPanel.revalidate();
+            boardPanel.repaint();
+        });
+
+        fileMenu.add(restartItem);
+        fileMenu.add(exitItem);
+        menuBar.add(fileMenu);
+
+        setJMenuBar(menuBar);
+                
+        fillGrid();
     }
 
     /**
@@ -323,7 +364,7 @@ public class ChessApp extends javax.swing.JFrame {
                 if (!(sq.getPiece() == null)) {
                     Piece p = sq.getPiece();
                     Image originalImage = p.getImage(); // Assuming this returns a java.awt.Image
-                    Image scaledImage = originalImage.getScaledInstance(boardPanel.getHeight() / 8, boardPanel.getHeight() / 8, Image.SCALE_SMOOTH); // Adjust size as needed
+                    Image scaledImage = originalImage.getScaledInstance(80, 80, Image.SCALE_SMOOTH); // Adjust size as needed
                     square.setIcon(new ImageIcon(scaledImage));
                 }
 
