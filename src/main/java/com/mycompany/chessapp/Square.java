@@ -13,8 +13,8 @@ public class Square {
     private Piece piece;
     
     
-    public Square() {
-    }
+    public Square() {}
+
     public Square(int row, int col, int color) {
         this.row = row;
         this.col = col;

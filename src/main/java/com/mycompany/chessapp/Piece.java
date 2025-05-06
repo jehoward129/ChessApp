@@ -17,8 +17,7 @@ public class Piece {
     String color;
     
     
-    private Piece() {
-    }
+    private Piece() {}
 
     public Piece(BufferedImage image, int row, int col, String color) {
         this.image = image;
