@@ -153,20 +153,23 @@ public class ChessApp extends javax.swing.JFrame {
             //check for legal move
             if (prevPiece.isMove(currentRow, currentCol)) { //if legal
                 makeMove(prevBtn, clickedBtn);
+                return;
             } else if (prevPiece instanceof Pawn) { // check for pawn capturing diagnol
-                if ((clickedSquare.getPiece() != null) && (Math.abs(currentCol - prevCol) == 1)) {
+                if ((clickedSquare.getPiece() != null) && !(clickedSquare.getPiece().getColor().equalsIgnoreCase(prevPiece.getColor())) && (Math.abs(currentCol - prevCol) == 1)) {
                     if (((prevPiece.getColor().equalsIgnoreCase("white")) && ((prevRow - currentRow) == 1)) || ((prevPiece.getColor().equalsIgnoreCase("black")) && ((prevRow - currentRow) == -1))) {
                         makeMove(prevBtn, clickedBtn);
-                    }else{
-                        resetAll(prevBtn, clickedBtn);
+                        return;
                     }
+                }else{
+                    resetAll(prevBtn, clickedBtn);
                 }
             } else if ((prevPiece instanceof King) && (clickedPiece instanceof Rook)) { //castling
-                if(canCastle(prevPiece, clickedPiece)){
+                if (canCastle(prevPiece, clickedPiece)) {
                     castle(prevPiece, clickedPiece, prevBtn, clickedBtn);
                 }
             } else { //if illigal reset all
                 resetAll(prevBtn, clickedBtn);
+                
             }
 
         }
@@ -193,6 +196,7 @@ public class ChessApp extends javax.swing.JFrame {
         if (prevPiece == null && clickedPiece == null) {
             resetColor(clickedBtn);
         }
+
     }
 
     public void resetColor(JButton btn) {
@@ -208,27 +212,28 @@ public class ChessApp extends javax.swing.JFrame {
     }
 
     public void makeMove(JButton fromSquare, JButton toSquare) {
-        //move piece on board
+        // move piece on board
         prevPiece.setCol(currentCol);
         prevPiece.setRow(currentRow);
         clickedSquare.setPiece(prevPiece);
         prevSquare.setPiece(null);
 
-        //move piece image on gui
+        // move piece image on gui
         Image originalImage = prevPiece.getImage();
         Image scaledImage = originalImage.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
         toSquare.setIcon(new ImageIcon(scaledImage));
         fromSquare.setIcon(null);
 
-        //reset colors
+        //reset
         resetAll(fromSquare, toSquare);
 
         // Switch turn
-        if(turn == 0){
-            turn =1;
-        }else{
+        if (turn == 0) {
+            turn = 1;
+        } else {
             turn = 0;
         }
+        System.out.println(turn);
     }
 
     //Resets everything if wrong move.
@@ -270,12 +275,12 @@ public class ChessApp extends javax.swing.JFrame {
 
         int newKingCol;
         int newRookCol;
-        if(kingCol < rookCol){
-            newKingCol = kingCol +2;
+        if (kingCol < rookCol) {
+            newKingCol = kingCol + 2;
             newRookCol = rookCol - 2;
-        }else{
+        } else {
             newKingCol = kingCol - 2;
-            newRookCol = rookCol +3;
+            newRookCol = rookCol + 3;
         }
 
         // Move king
@@ -289,8 +294,8 @@ public class ChessApp extends javax.swing.JFrame {
         rook.setCol(newRookCol);
 
         // Update GUI
-        JButton newKingBtn = (JButton) boardPanel.getComponent(prevRow *8 + newKingCol);
-        JButton newRookBtn = (JButton) boardPanel.getComponent(prevRow *8 + newRookCol);
+        JButton newKingBtn = (JButton) boardPanel.getComponent(prevRow * 8 + newKingCol);
+        JButton newRookBtn = (JButton) boardPanel.getComponent(prevRow * 8 + newRookCol);
 
         Image kingImg = king.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
         Image rookImg = rook.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
