@@ -1,4 +1,3 @@
-
 package com.mycompany.chessapp;
 
 import java.awt.Color;
@@ -11,7 +10,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-
 
 /**
  *
@@ -55,7 +53,7 @@ public class ChessApp extends javax.swing.JFrame {
                 BtnClicked(source);
             }
         };
-        
+
         JMenuBar menuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
         JMenuItem restartItem = new JMenuItem("Restart Game");
@@ -73,7 +71,7 @@ public class ChessApp extends javax.swing.JFrame {
             clickedPiece = null;
             prevBtn = null;
             turn = 0;
-            
+
             setSize(900, 900);
             board = new Board();
             fillGrid(); // re-add buttons and images
@@ -86,10 +84,9 @@ public class ChessApp extends javax.swing.JFrame {
         menuBar.add(fileMenu);
 
         setJMenuBar(menuBar);
-                
+
         fillGrid();
     }
-
 
     @SuppressWarnings("unchecked")
     private void initComponents() {
@@ -101,17 +98,17 @@ public class ChessApp extends javax.swing.JFrame {
 
         boardPanel.setBackground(new java.awt.Color(0, 0, 0));
         boardPanel.setLayout(new java.awt.GridLayout());
-        boardPanel.setLayout(new java.awt.GridLayout(8,8));
+        boardPanel.setLayout(new java.awt.GridLayout(8, 8));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(boardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(boardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(boardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(boardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -162,6 +159,7 @@ public class ChessApp extends javax.swing.JFrame {
         if (prevPiece != null) {
 
             //check for legal move
+            System.out.println(board.isMove(prevSquare, clickedSquare));
             if (board.isMove(prevSquare, clickedSquare)) { //if legal
                 makeMove(prevBtn, clickedBtn);
                 return;
@@ -224,44 +222,42 @@ public class ChessApp extends javax.swing.JFrame {
 
     public void makeMove(JButton fromSquare, JButton toSquare) {
         // move piece on board
-        
+
         prevPiece.setCol(currentCol);
         prevPiece.setRow(currentRow);
-        
+
         // A check to see if the rook or king is moving - for castling purposes.
-        if (prevPiece instanceof com.mycompany.chessapp.King){
-            ((com.mycompany.chessapp.King)prevPiece).moved();
+        if (prevPiece instanceof com.mycompany.chessapp.King) {
+            ((com.mycompany.chessapp.King) prevPiece).moved();
         }
 
-        if (prevPiece instanceof com.mycompany.chessapp.Rook){
-            ((com.mycompany.chessapp.Rook)prevPiece).moved();
+        if (prevPiece instanceof com.mycompany.chessapp.Rook) {
+            ((com.mycompany.chessapp.Rook) prevPiece).moved();
         }
 
-        if (prevPiece instanceof com.mycompany.chessapp.Pawn){
-            if (currentRow == 7 || currentRow == 0){
+        if (prevPiece instanceof com.mycompany.chessapp.Pawn) {
+            if (currentRow == 7 || currentRow == 0) {
 
                 Pawn currentPawn = (Pawn) prevPiece;
 
-                if (currentPawn.getColor().equalsIgnoreCase("white")){
+                if (currentPawn.getColor().equalsIgnoreCase("white")) {
                     prevPiece = new Queen(currentRow, currentCol, "white");
                 } else {
                     prevPiece = new Queen(currentRow, currentCol, "black");
                 }
             }
         }
-        System.out.println("Current ROW:" +currentRow);
-
-        isCheck();
-
+        System.out.println("Current ROW:" + currentRow);
         clickedSquare.setPiece(prevPiece);
         prevSquare.setPiece(null);
-
+        isCheck();
+        
+        
         // move piece image on gui
         Image originalImage = prevPiece.getImage();
         Image scaledImage = originalImage.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
         toSquare.setIcon(new ImageIcon(scaledImage));
         fromSquare.setIcon(null);
-        
 
         //reset
         resetAll(fromSquare, toSquare);
@@ -275,42 +271,68 @@ public class ChessApp extends javax.swing.JFrame {
         System.out.println(turn);
     }
 
-    public boolean isCheck() {
+    public void isCheck() {
         Square kingSquare = null;
-        
-        //find king
-        if (turn == 0) {
-            for (int row = 0; row < 8; row++) {
-                for (int col = 0; col < 8; col++) {
-                    Square square = board.getSquare(row, col);
-                    Piece piece = square.getPiece();
-                    if (piece instanceof King && piece.getColor().equalsIgnoreCase("black")) {
-                        kingSquare = square;
-                    }
+        String kingColor = (turn == 0) ? "white" : "black";
+        String enemyColor = (turn == 0) ? "black" : "white";
+
+        // Find the current player's king
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Piece p = board.getSquare(row, col).getPiece();
+                if (p instanceof King && p.getColor().equalsIgnoreCase(kingColor)) {
+                    kingSquare = board.getSquare(row, col);
                 }
             }
-        }else{
-            for (int row = 0; row < 8; row++) {
-                for (int col = 0; col < 8; col++) {
-                    Square square = board.getSquare(row, col);
-                    Piece piece = square.getPiece();
-                    if (piece instanceof King && piece.getColor().equalsIgnoreCase("white")) {
-                        kingSquare = square;
+        }
+
+        // Check if any enemy piece can move to the king's square
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Piece enemyPiece = board.getSquare(row, col).getPiece();
+                if (enemyPiece != null && enemyPiece.getColor().equalsIgnoreCase(enemyColor)) {
+                    Square from = board.getSquare(row, col);
+                    if (board.isMove(from, kingSquare)) {
+                        JButton kingBtn = (JButton) boardPanel.getComponent(kingSquare.getRow() * 8 + kingSquare.getCol());
+                        kingBtn.setBackground(Color.red);
+                        break;
+                        
                     }
+                }else{
+                    JButton kingBtn = (JButton) boardPanel.getComponent(kingSquare.getRow() * 8 + kingSquare.getCol());
+                    resetColor(kingBtn);
                 }
             }
         }
         
-        int kingCol = kingSquare.getCol();
-        int kingRow = kingSquare.getRow();
-        boolean inCheck = prevPiece.isMove(kingRow, kingCol);
-        if(inCheck){
-            JButton KingBtn = (JButton) boardPanel.getComponent(kingRow * 8 + kingCol);
-            KingBtn.setBackground(Color.red);
+        //Find enemy king
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Piece p = board.getSquare(row, col).getPiece();
+                if (p instanceof King && p.getColor().equalsIgnoreCase(enemyColor)) {
+                    kingSquare = board.getSquare(row, col);
+                }
+            }
         }
-        return inCheck;
+        
+        // Check if any enemy piece can move to the king's square
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Piece enemyPiece = board.getSquare(row, col).getPiece();
+                if (enemyPiece != null && enemyPiece.getColor().equalsIgnoreCase(kingColor)) {
+                    Square from = board.getSquare(row, col);
+                    if (board.isMove(from, kingSquare)) {
+                        JButton kingBtn = (JButton) boardPanel.getComponent(kingSquare.getRow() * 8 + kingSquare.getCol());
+                        kingBtn.setBackground(Color.red);
+                        break;
+                    }
+                }else{
+                    JButton kingBtn = (JButton) boardPanel.getComponent(kingSquare.getRow() * 8 + kingSquare.getCol());
+                    resetColor(kingBtn);
+                }
+            }
+        }
     }
-    
 
     //Resets everything if wrong move.
     public void resetAll(JButton fromSquare, JButton toSquare) {
@@ -323,14 +345,12 @@ public class ChessApp extends javax.swing.JFrame {
 
     public boolean canCastle(Piece kingPiece, Piece rookPiece) {
 
-
         King king = (King) kingPiece;
         Rook rook = (Rook) rookPiece;
 
-        if (king.hasMoved() || rook.hasMoved()){
+        if (king.hasMoved() || rook.hasMoved()) {
             return false;
         }
-
 
         // Ensure both are on same row
         if (kingPiece.getRow() != rookPiece.getRow()) {

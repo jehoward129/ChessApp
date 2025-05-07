@@ -86,16 +86,22 @@ public class Board {
         Piece movingPiece = from.getPiece();
 
         if (from == to) {
+            System.out.println("same square");
             return false; // Can't move to the same square
         }
         Piece targetPiece = to.getPiece();
 
         // If there's a piece on the target square and it's the same color, can't move there
-        if (targetPiece != null && targetPiece.getColor().equalsIgnoreCase(movingPiece.getColor())) {
-            return false;
+        if (targetPiece != null){
+            if(targetPiece.getColor().equalsIgnoreCase(movingPiece.getColor())){
+                System.out.println("same color");
+                return false;
+            }
+               
         }
 
         if (!(movingPiece.isMove(to.getRow(), to.getCol()))){
+            System.out.println("Piece doesn't move like that");
             return false;
         }
         
@@ -109,32 +115,39 @@ public class Board {
             if(frow == trow){
                 dist = Math.abs(fcol - tcol);
                 if(tcol < fcol){
-                    for(int i = 0; i < dist; i++){
-                        if(squares[trow][tcol + i].hasPiece()){
+                    for(int i = 1; i < dist; i++){
+                        if(squares[frow][fcol - i].hasPiece()){
+                            System.out.println("Piece in the way1");
                             return false;
                         }
                     }
                     
                 }else{
-                    for(int i = 0; i < dist; i++){
-                        if(squares[trow][tcol - i].hasPiece()){
+                    for(int i = 1; i < dist; i++){
+                        if(squares[frow][fcol + i].hasPiece()){
+                            System.out.println("Piece in the way2");
                             return false;
                         }
                     }
                 }
                 
-            }else{
+            }else if(fcol == frow){
                 dist = Math.abs(trow - frow);
                 if(trow < frow){
-                    for(int i = 0; i < dist; i++){
-                        if(squares[trow + i][tcol].hasPiece()){
+                    for(int i = 1; i < dist; i++){
+                        if(squares[frow - i][fcol].hasPiece()){
+                            System.out.println("Piece in the way3");
                             return false;
                         }
                     }
                     
                 }else{
-                    for(int i = 0; i < dist; i++){
-                        if(squares[trow - i][tcol].hasPiece()){
+                    for(int i = 1; i < dist; i++){
+                        if(squares[frow + i][fcol].hasPiece()){
+                            int badpieceloc = trow + i;
+                                    
+                            System.out.println("Piece in the way4" + badpieceloc + " ," + tcol);
+                            
                             return false;
                         }
                     }
@@ -152,29 +165,33 @@ public class Board {
             if(trow < frow){
                 dist = Math.abs(frow - trow);
                 if(tcol < fcol){
-                    for(int i = 0; i < dist; i++){
-                        if(squares[trow + i][tcol +i].hasPiece()){
+                    for(int i = 1; i < dist; i++){
+                        if(squares[frow - i][fcol -i].hasPiece()){
+                            System.out.println("Piece in the way5");
                             return false;
                         }
                     }
-                }else{
-                    for(int i = 0; i < dist; i++){
-                        if(squares[trow + i][tcol - i].hasPiece()){
+                }else if(fcol < tcol){
+                    for(int i = 1; i < dist; i++){
+                        if(squares[frow - i][fcol + i].hasPiece()){
+                            System.out.println("Piece in the way6");
                             return false;
                         }
                     }
                 }
-            }else{
+            }else if(frow < trow){
                 dist = Math.abs(frow - trow);
                 if(tcol < fcol){
-                    for(int i = 0; i < dist; i++){
-                        if(squares[trow - i][tcol +i].hasPiece()){
+                    for(int i = 1; i < dist; i++){
+                        if(squares[frow + i][fcol -i].hasPiece()){
+                            System.out.println("Piece in the way8");
                             return false;
                         }
                     }
-                }else{
-                    for(int i = 0; i < dist; i++){
-                        if(squares[trow - i][tcol - i].hasPiece()){
+                }else if(fcol < tcol){
+                    for(int i = 1; i < dist; i++){
+                        if(squares[frow + i][fcol + i].hasPiece()){
+                            System.out.println("Piece in the way9");
                             return false;
                         }
                     }
