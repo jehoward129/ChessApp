@@ -140,7 +140,7 @@ public class Board {
                     }
                 }
                 
-            }else if(fcol == frow){
+            }else if(fcol == tcol){
                 dist = Math.abs(trow - frow);
                 if(trow < frow){
                     for(int i = 1; i < dist; i++){

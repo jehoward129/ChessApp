@@ -171,12 +171,16 @@ public class ChessApp extends javax.swing.JFrame {
             //check for legal move
             System.out.println(board.isMove(prevSquare, clickedSquare));
             if (board.isMove(prevSquare, clickedSquare)) { //if legal
+                isCheck();
                 makeMove(prevBtn, clickedBtn);
+                isCheck();
                 return;
             } else if (prevPiece instanceof Pawn) { // check for pawn capturing diagnol
                 if ((clickedSquare.getPiece() != null) && !(clickedSquare.getPiece().getColor().equalsIgnoreCase(prevPiece.getColor())) && (Math.abs(currentCol - prevCol) == 1)) {
                     if (((prevPiece.getColor().equalsIgnoreCase("white")) && ((prevRow - currentRow) == 1)) || ((prevPiece.getColor().equalsIgnoreCase("black")) && ((prevRow - currentRow) == -1))) {
+                        isCheck();
                         makeMove(prevBtn, clickedBtn);
+                        isCheck();
                         return;
                     }
                 } else {
@@ -261,8 +265,7 @@ public class ChessApp extends javax.swing.JFrame {
         clickedSquare.setPiece(prevPiece);
         prevSquare.setPiece(null);
         isCheck();
-        
-        
+
         // move piece image on gui
         Image originalImage = prevPiece.getImage();
         Image scaledImage = originalImage.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
@@ -283,64 +286,45 @@ public class ChessApp extends javax.swing.JFrame {
 
     public void isCheck() {
         Square kingSquare = null;
-        String kingColor = (turn == 0) ? "white" : "black";
-        String enemyColor = (turn == 0) ? "black" : "white";
+        String kingColor = (turn == 1) ? "white" : "black";
+        String enemyColor = (turn == 1) ? "black" : "white";
 
-        // Find the current player's king
-        for (int row = 0; row < 8; row++) {
+        // 1. Find the current player's king
+        for (int row = 0; row < 8 && kingSquare == null; row++) {
             for (int col = 0; col < 8; col++) {
                 Piece p = board.getSquare(row, col).getPiece();
                 if (p instanceof King && p.getColor().equalsIgnoreCase(kingColor)) {
                     kingSquare = board.getSquare(row, col);
+                    break;
                 }
             }
         }
 
-        // Check if any enemy piece can move to the king's square
-        for (int row = 0; row < 8; row++) {
+        if (kingSquare == null) {
+            return; // Safety check
+        }
+        boolean inCheck = false;
+
+        // 2. Check if any enemy piece can move to the king's square
+        for (int row = 0; row < 8 && !inCheck; row++) {
             for (int col = 0; col < 8; col++) {
                 Piece enemyPiece = board.getSquare(row, col).getPiece();
                 if (enemyPiece != null && enemyPiece.getColor().equalsIgnoreCase(enemyColor)) {
                     Square from = board.getSquare(row, col);
                     if (board.isMove(from, kingSquare)) {
-                        JButton kingBtn = (JButton) boardPanel.getComponent(kingSquare.getRow() * 8 + kingSquare.getCol());
-                        kingBtn.setBackground(Color.red);
+                        inCheck = true;
                         break;
-                        
                     }
-                }else{
-                    JButton kingBtn = (JButton) boardPanel.getComponent(kingSquare.getRow() * 8 + kingSquare.getCol());
-                    resetColor(kingBtn);
                 }
             }
         }
-        
-        //Find enemy king
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                Piece p = board.getSquare(row, col).getPiece();
-                if (p instanceof King && p.getColor().equalsIgnoreCase(enemyColor)) {
-                    kingSquare = board.getSquare(row, col);
-                }
-            }
-        }
-        
-        // Check if any enemy piece can move to the king's square
-        for (int row = 0; row < 8; row++) {
-            for (int col = 0; col < 8; col++) {
-                Piece enemyPiece = board.getSquare(row, col).getPiece();
-                if (enemyPiece != null && enemyPiece.getColor().equalsIgnoreCase(kingColor)) {
-                    Square from = board.getSquare(row, col);
-                    if (board.isMove(from, kingSquare)) {
-                        JButton kingBtn = (JButton) boardPanel.getComponent(kingSquare.getRow() * 8 + kingSquare.getCol());
-                        kingBtn.setBackground(Color.red);
-                        break;
-                    }
-                }else{
-                    JButton kingBtn = (JButton) boardPanel.getComponent(kingSquare.getRow() * 8 + kingSquare.getCol());
-                    resetColor(kingBtn);
-                }
-            }
+
+        // 3. Set color based on inCheck status
+        JButton kingBtn = (JButton) boardPanel.getComponent(kingSquare.getRow() * 8 + kingSquare.getCol());
+        if (inCheck) {
+            kingBtn.setBackground(Color.RED);
+        } else {
+            resetColor(kingBtn);
         }
     }
 
