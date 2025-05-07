@@ -21,7 +21,6 @@ public class Pawn extends Piece{
     }
 
     private static BufferedImage loadImage(String color) {
-
         try {
             return ImageIO.read(Pawn.class.getResource("/images/" + color + "-pawn.png"));
         } catch (IOException ex) {
