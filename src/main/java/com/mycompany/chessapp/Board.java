@@ -85,6 +85,15 @@ public class Board {
     public boolean isMove(Square from, Square to) {
         Piece movingPiece = from.getPiece();
 
+        // pawns cannot take forward
+        if (movingPiece instanceof com.mycompany.chessapp.Pawn){
+            if (from.getRow() - to.getRow() == 1 || from.getRow() - to.getRow() == -1){ // if the pawn is moving one up or down it cannot take.
+                if (to.getPiece() != null){
+                    return false;
+                }
+            }
+        }
+
         if (from == to) {
             System.out.println("same square");
             return false; // Can't move to the same square
