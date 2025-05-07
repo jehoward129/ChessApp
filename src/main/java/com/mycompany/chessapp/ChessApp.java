@@ -58,10 +58,19 @@ public class ChessApp extends javax.swing.JFrame {
         JMenu fileMenu = new JMenu("File");
         JMenuItem restartItem = new JMenuItem("Restart Game");
         JMenuItem exitItem = new JMenuItem("Exit");
+        JMenuItem resignItem = new JMenuItem("Resign");
 
         exitItem.addActionListener(e -> System.exit(0));
 
-        JOptionPane.showMessageDialog(null, "This is a pop-up message!");
+        resignItem.addActionListener(e -> {
+            // TODO GAME OVER SCREEN.
+            if (turn == 0){
+                JOptionPane.showMessageDialog(null, "White resigns: Black is victorious!");
+            } else {
+                JOptionPane.showMessageDialog(null, "White resigns: Black is victorious!");
+            }
+            turn = -1;
+        });
 
         restartItem.addActionListener(e -> {
             boardPanel.removeAll();
@@ -81,6 +90,7 @@ public class ChessApp extends javax.swing.JFrame {
 
         fileMenu.add(restartItem);
         fileMenu.add(exitItem);
+        fileMenu.add(resignItem);
         menuBar.add(fileMenu);
 
         setJMenuBar(menuBar);
