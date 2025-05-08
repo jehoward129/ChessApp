@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -63,11 +64,12 @@ public class ChessApp extends javax.swing.JFrame {
         exitItem.addActionListener(e -> System.exit(0));
 
         resignItem.addActionListener(e -> {
-            // TODO GAME OVER SCREEN.
-            if (turn == 0){
-                JOptionPane.showMessageDialog(null, "White resigns: Black is victorious!");
+            if (turn == 0) {
+                gameOver("white", 0);
+
             } else {
-                JOptionPane.showMessageDialog(null, "White resigns: Black is victorious!");
+                gameOver("black", 0);
+
             }
             turn = -1;
         });
@@ -289,7 +291,7 @@ public class ChessApp extends javax.swing.JFrame {
         String kingColor = (turn == 1) ? "white" : "black";
         String enemyColor = (turn == 1) ? "black" : "white";
 
-        // 1. Find the current player's king
+        // Find the current player's king
         for (int row = 0; row < 8 && kingSquare == null; row++) {
             for (int col = 0; col < 8; col++) {
                 Piece p = board.getSquare(row, col).getPiece();
@@ -301,11 +303,12 @@ public class ChessApp extends javax.swing.JFrame {
         }
 
         if (kingSquare == null) {
-            return; // Safety check
+            gameOver(kingColor, 1);
+            return;
         }
         boolean inCheck = false;
 
-        // 2. Check if any enemy piece can move to the king's square
+        //Check if any enemy piece can move to the king's square
         for (int row = 0; row < 8 && !inCheck; row++) {
             for (int col = 0; col < 8; col++) {
                 Piece enemyPiece = board.getSquare(row, col).getPiece();
@@ -319,13 +322,44 @@ public class ChessApp extends javax.swing.JFrame {
             }
         }
 
-        // 3. Set color based on inCheck status
+        //Set color
         JButton kingBtn = (JButton) boardPanel.getComponent(kingSquare.getRow() * 8 + kingSquare.getCol());
         if (inCheck) {
             kingBtn.setBackground(Color.RED);
         } else {
             resetColor(kingBtn);
         }
+    }
+
+    public void gameOver(String loser, int source) {
+        //Disable all board buttons and recolor squares
+        for (int i = 0; i < boardPanel.getComponentCount(); i++) {
+            JButton btn = (JButton) boardPanel.getComponent(i);
+            btn.setEnabled(false);
+
+            String[] pos = btn.getActionCommand().split(",");
+            int row = Integer.parseInt(pos[0]);
+            int col = Integer.parseInt(pos[1]);
+
+            if ((row + col) % 2 == 0) {
+                btn.setBackground(Color.LIGHT_GRAY);
+            } else {
+                btn.setBackground(Color.DARK_GRAY);
+            }
+        }
+
+        //make lbl visible
+        String winner = (loser == "white") ? "black" : "white";
+        if (source == 1) {
+            JOptionPane.showMessageDialog(null, "The king is dead! " + winner + " is victorious!");
+        } else {
+            if (loser == "black") {
+                JOptionPane.showMessageDialog(null, "Black resigns: White is victorious!");
+            } else {
+                JOptionPane.showMessageDialog(null, "White resigns: Black is victorious!");
+            }
+        }
+
     }
 
     //Resets everything if wrong move.
