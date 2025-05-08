@@ -10,16 +10,10 @@ import java.util.List;
 /**
  *
  * @author jehow
+ * @author Tussky
  */
 public class Board {
 
-//    public void draw(Graphics g){
-//        for(int i = 0; i < 8; i++){
-//            for(int i = 0; i < 8; i++){
-//                
-//            }
-//        }
-//    }
     private Square[][] squares;
     private List<Piece> pieces = new ArrayList<>();
 
@@ -110,7 +104,6 @@ public class Board {
         }
 
         if (!(movingPiece.isMove(to.getRow(), to.getCol()))){
-            System.out.println("Piece doesn't move like that");
             return false;
         }
         

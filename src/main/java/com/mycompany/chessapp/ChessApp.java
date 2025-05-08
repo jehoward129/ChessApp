@@ -263,7 +263,6 @@ public class ChessApp extends javax.swing.JFrame {
                 }
             }
         }
-        System.out.println("Current ROW:" + currentRow);
         clickedSquare.setPiece(prevPiece);
         prevSquare.setPiece(null);
         isCheck();
